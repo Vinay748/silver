@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+       
+    <meta charset="UTF-8">
+        <title>Form 365 Transfer Review - HOD</title>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+
+        .section {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+
+        input[type="text"],
+        input[type="date"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            font-size: 1rem;
+        }
+
+
+        .signature-preview {
+            margin-top: 10px;
+            border: 1px dashed #aaa;
+            height: 60px;
+            text-align: center;
+            line-height: 60px;
+        }
+
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: green;
+            color: #fff;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+
+<body>
+        <h2>Form 365 - Transfer (HOD Review)</h2>
+
+
+        <div class="section" id="employeeSection">
+                <label>Name of Employee:</label>
+                <input type="text" id="empName" readonly>
+
+
+                <label>Employee ID:</label>
+                <input type="text" id="employeeId" readonly>
+
+
+                <label>Designation:</label>
+                <input type="text" id="designation" readonly>
+
+
+                <label>Old Department:</label>
+                <input type="text" id="oldDepartment" readonly>
+
+
+                <label>New Department:</label>
+                <input type="text" id="newDepartment" readonly>
+
+
+                <label>Reason for Transfer:</label>
+                <textarea id="reason" rows="3" readonly></textarea>
+
+
+                <label>Effective Transfer Date:</label>
+                <input type="date" id="transferDate" readonly>
+            </div>
+
+
+        <div class="section" id="hodSection">
+                <h3>HOD Approval Section</h3>
+
+
+                <label>Name of HOD:</label>
+                <input type="text" id="hodName">
+
+
+                <label>Employee No.:</label>
+                <input type="text" id="hodEmpNo">
+
+
+                <label>Email Id:</label>
+                <input type="text" id="hodEmail">
+
+
+                <label>Signature:</label>
+                <input type="file" id="signatureUpload" accept="image/*">
+                <div id="signaturePreview" class="signature-preview">No signature uploaded</div>
+            </div>
+
+
+        <button onclick="submitHodReview()">✅ Submit HOD Approval</button>
+        <p id="statusMsg"></p>
+
+
+       
+    <script>
+        const queryParams = new URLSearchParams(window.location.search);
+        const formId = queryParams.get('formId');
+
+
+        async function loadForm365TransferData() {
+            if (!formId) return alert("Missing form ID!");
+
+
+            try {
+                const res = await fetch(`/api/hod/form-details?formId=${formId}`, {
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+
+                if (!data.success) return alert("Failed to load form data.");
+                const form = data.form.formResponses?.form365TransferData;
+                if (!form) return alert("Form 365 Transfer data not found.");
+
+
+                document.getElementById("empName").value = form.empName || '';
+                document.getElementById("employeeId").value = form.employeeId || '';
+                document.getElementById("designation").value = form.designation || '';
+                document.getElementById("oldDepartment").value = form.oldDepartment || '';
+                document.getElementById("newDepartment").value = form.newDepartment || '';
+                document.getElementById("reason").value = form.reason || '';
+                document.getElementById("transferDate").value = form.transferDate || '';
+            } catch (err) {
+                console.error("❌ Error loading transfer data:", err);
+                alert("Error loading transfer form");
+            }
+        }
+
+
+        function previewSignature(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('signaturePreview').innerHTML =
+                    `<img src="${e.target.result}" alt="Signature" style="max-height: 60px;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+
+        async function submitHodReview() {
+            const hodName = document.getElementById("hodName").value.trim();
+            const hodEmpNo = document.getElementById("hodEmpNo").value.trim();
+            const hodEmail = document.getElementById("hodEmail").value.trim();
+            const signatureFile = document.getElementById("signatureUpload").files[0];
+
+
+            if (!hodName || !hodEmpNo || !hodEmail || !signatureFile) {
+                return alert("Please complete all HOD fields and upload signature.");
+            }
+
+
+            const formData = new FormData();
+            formData.append('formId', formId);
+            formData.append('formType', 'form365Transfer');
+            formData.append('hodName', hodName);
+            formData.append('hodEmpNo', hodEmpNo);
+            formData.append('hodEmail', hodEmail);
+            formData.append('signature', signatureFile);
+
+
+            const res = await fetch('/api/hod/submit-form', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+
+
+            const result = await res.json();
+            document.getElementById("statusMsg").textContent = result.message || "Submitted.";
+        }
+
+
+        document.getElementById("signatureUpload").addEventListener("change", previewSignature);
+        window.onload = loadForm365TransferData;
+    </script>
+</body>
+
+
+</html>

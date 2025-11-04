@@ -1,0 +1,570 @@
+/* navigationStyles.css – Mobile‑first styles for form‑only Back + modal (no global back button) */
+
+/* ========== Animations ========== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========== Form-only Back button (local to forms) ========== /
+/ Tip: this is injected only on form pages, not globally */
+.form-back-button {
+  position: sticky;
+  top: 8px;
+  z-index: 100;
+  display: inline-block;
+  margin: 8px 8px 0 8px;
+}
+
+.form-back-button .back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  color: #fff;
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 40px;
+}
+
+.form-back-button .back-btn:hover {
+  background: linear-gradient(135deg, #5a6268 0%, #3d4142 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+}
+
+.form-back-button .back-btn:active,
+.form-back-button .back-btn.touch-active {
+  transform: translateY(0) scale(0.96);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.24);
+}
+
+.form-back-button .back-btn:focus-visible {
+  outline: 3px solid #007bff;
+  outline-offset: 2px;
+}
+
+.form-back-button .back-arrow {
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.form-back-button .back-text {
+  font-weight: 500;
+  letter-spacing: .3px;
+}
+
+/* ========== Modal (3-option dialog) ========== */
+.navigation-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn .25s ease-out;
+  padding: 20px;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 26px;
+  border-radius: 14px;
+  max-width: 520px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.32);
+  animation: slideIn .25s ease-out;
+  position: relative;
+}
+
+.modal-content h3 {
+  margin: 0 0 14px 0;
+  color: #2c3e50;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.modal-body {
+  margin-top: 6px;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.modal-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+  min-width: 120px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+.modal-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0 100% 0 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transition: inset .5s ease;
+}
+
+.modal-btn:hover::before {
+  inset: 0 0 0 0;
+}
+
+.modal-btn.btn-success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.modal-btn.btn-success:hover {
+  background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+}
+
+.modal-btn.btn-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+}
+
+.modal-btn.btn-danger:hover {
+  background: linear-gradient(135deg, #c82333 0%, #c0392b 100%);
+}
+
+.modal-btn.btn-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+.modal-btn.btn-secondary:hover {
+  background: linear-gradient(135deg, #5a6268 0%, #3d4142 100%);
+}
+
+.modal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.modal-btn:active {
+  transform: translateY(0) scale(.98);
+}
+
+.modal-btn:focus-visible {
+  outline: 3px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* ========== Form data preview inside modal ========== */
+.form-data-preview {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 12px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  font-size: 14px;
+}
+
+.preview-item {
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #e6e6e6;
+  line-height: 1.4;
+}
+
+.preview-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.preview-item strong {
+  color: #1976d2;
+  font-weight: 700;
+}
+
+/* ========== Loading state ========== */
+#navigationLoader,
+.navigation-loading {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100000;
+  background: rgba(0, 0, 0, 0.82);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .9s linear infinite;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 1024px) {
+  .modal-content {
+    max-width: 460px;
+    padding: 24px;
+  }
+
+  .modal-btn {
+    min-width: 104px;
+    padding: 11px 18px;
+  }
+}
+
+@media (max-width: 820px) {
+  .navigation-modal {
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.78);
+  }
+
+  .modal-content {
+    max-width: 420px;
+    padding: 22px;
+  }
+
+  .modal-content h3 {
+    font-size: 1.08rem;
+  }
+
+  .modal-buttons {
+    gap: 8px;
+  }
+
+  .modal-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-width: 96px;
+  }
+
+  .form-data-preview {
+    max-height: 160px;
+    font-size: 13px;
+  }
+
+  #navigationLoader {
+    font-size: 13px;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .navigation-modal {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 22px;
+    border-radius: 16px 16px 0 0 !important;
+    animation: slideInFromBottom .25s ease-out;
+    max-height: 90vh;
+    margin: 0;
+  }
+
+  .modal-content h3 {
+    text-align: center;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-btn {
+    width: 100%;
+    padding: 12px 16px;
+    min-width: auto;
+  }
+
+  .form-data-preview {
+    max-height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-back-button .back-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .form-back-button .back-arrow {
+    font-size: 16px;
+  }
+
+  .form-back-button .back-text {
+    display: none;
+  }
+
+  .modal-content {
+    padding: 16px;
+  }
+
+  .modal-content h3 {
+    font-size: 1rem;
+  }
+
+  .modal-btn {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .preview-item {
+    font-size: 13px;
+  }
+
+  #navigationLoader {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .form-back-button .back-btn {
+    padding: 8px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .modal-content {
+    padding: 12px;
+  }
+
+  .modal-btn {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .form-data-preview {
+    max-height: 100px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .preview-item {
+    font-size: 12px;
+  }
+}
+
+/* ========== Touch optimizations ========== */
+@media (hover: none) and (pointer: coarse) {
+  .form-back-button .back-btn:hover {
+    transform: none;
+  }
+
+  .modal-btn:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .modal-btn.btn-success:hover {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  }
+
+  .modal-btn.btn-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+  }
+
+  .modal-btn.btn-secondary:hover {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  }
+
+  .form-back-button .back-btn:active,
+  .modal-btn:active {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ========== Dark mode ========== */
+@media (prefers-color-scheme: dark) {
+  .modal-content {
+    background: #2c3e50;
+    color: #ecf0f1;
+    border: 1px solid #34495e;
+  }
+
+  .modal-content h3 {
+    color: #ecf0f1;
+  }
+
+  .form-data-preview {
+    background: #34495e;
+    color: #ecf0f1;
+    border-color: #4a5568;
+  }
+
+  .preview-item {
+    border-bottom-color: #4a5568;
+  }
+
+  .preview-item strong {
+    color: #64b5f6;
+  }
+}
+
+/* ========== Reduced motion / High contrast / SR-only ========== */
+@media (prefers-reduced-motion: reduce) {
+
+  .navigation-modal,
+  .modal-content,
+  .modal-btn,
+  .loading-spinner {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .modal-btn::before {
+    display: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+
+  .modal-content,
+  .modal-btn {
+    border: 2px solid currentColor;
+  }
+
+  .form-back-button .back-btn {
+    border: 2px solid currentColor;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========== Print ========== */
+@media print {
+
+  .navigation-modal,
+  .navigation-loading,
+  #navigationLoader,
+  .form-back-button {
+    display: none !important;
+  }
+}
+
+/* ========== Scrollbars (WebKit) ========== */
+.form-data-preview::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.form-data-preview::-webkit-scrollbar-track,
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.form-data-preview::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.form-data-preview::-webkit-scrollbar-thumb:hover,
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* ========== Utilities ========== */
+.fade-in {
+  animation: fadeIn .25s ease-out;
+}
+
+.slide-in {
+  animation: slideIn .25s ease-out;
+}
+
+.slide-in-from-bottom {
+  animation: slideInFromBottom .25s ease-out;
+}

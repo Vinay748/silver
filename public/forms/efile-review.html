@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+       
+    <meta charset="UTF-8">
+        <title>E-File Review - HOD</title>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+
+        .section {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+
+        input[type="text"],
+        input[type="date"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            font-size: 1rem;
+        }
+
+
+        .signature-preview {
+            margin-top: 10px;
+            border: 1px dashed #aaa;
+            height: 60px;
+            text-align: center;
+            line-height: 60px;
+        }
+
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: green;
+            color: #fff;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+
+<body>
+        <h2>Employee E-File Handover Review</h2>
+
+
+        <div class="section" id="employeeSection">
+                <label>Employee Name:</label>
+                <input type="text" id="empName" readonly>
+
+
+                <label>Employee ID:</label>
+                <input type="text" id="employeeId" readonly>
+
+
+                <label>Department:</label>
+                <input type="text" id="department" readonly>
+
+
+                <label>Date of Handover:</label>
+                <input type="date" id="handoverDate" readonly>
+
+
+                <label>List of Files/Documents Handed Over:</label>
+                <textarea id="fileList" rows="5" readonly></textarea>
+            </div>
+
+
+        <div class="section" id="hodSection">
+                <h3>HOD Approval Section</h3>
+
+
+                <label for="hodName">Name of HOD:</label>
+                <input type="text" id="hodName">
+
+
+                <label for="hodEmpNo">Employee No.:</label>
+                <input type="text" id="hodEmpNo">
+
+
+                <label for="hodEmail">Email Id:</label>
+                <input type="text" id="hodEmail">
+
+
+                <label>Signature:</label>
+                <input type="file" id="signatureUpload" accept="image/*">
+                <div id="signaturePreview" class="signature-preview">No signature uploaded</div>
+            </div>
+
+
+        <button onclick="submitHodReview()">✅ Submit HOD Approval</button>
+        <p id="statusMsg"></p>
+
+
+       
+    <script>
+        const queryParams = new URLSearchParams(window.location.search);
+        const formId = queryParams.get('formId');
+
+
+        async function loadEfileFormData() {
+            if (!formId) return alert("Missing form ID!");
+
+
+            try {
+                const res = await fetch(`/api/hod/form-details?formId=${formId}`, {
+                    credentials: 'include'
+                });
+                const data = await res.json();
+
+
+                if (!data.success) return alert("Failed to load form data.");
+
+
+                const form = data.form.formResponses?.efileFormData;
+                if (!form) return alert("E-File form data missing.");
+
+
+                document.getElementById("empName").value = form.empName || '';
+                document.getElementById("employeeId").value = form.employeeId || '';
+                document.getElementById("department").value = form.department || '';
+                document.getElementById("handoverDate").value = form.handoverDate || '';
+                document.getElementById("fileList").value = form.fileList || '';
+            } catch (err) {
+                console.error('❌ Error loading e-file form:', err);
+                alert("Error loading form");
+            }
+        }
+
+
+        function previewSignature(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('signaturePreview').innerHTML =
+                    `<img src="${e.target.result}" alt="Signature" style="max-height: 60px;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+
+        async function submitHodReview() {
+            const hodName = document.getElementById("hodName").value.trim();
+            const hodEmpNo = document.getElementById("hodEmpNo").value.trim();
+            const hodEmail = document.getElementById("hodEmail").value.trim();
+            const signatureFile = document.getElementById("signatureUpload").files[0];
+
+
+            if (!hodName || !hodEmpNo || !hodEmail || !signatureFile) {
+                return alert("Please complete all HOD fields and upload signature.");
+            }
+
+
+            const formData = new FormData();
+            formData.append('formId', formId);
+            formData.append('formType', 'efile');
+            formData.append('hodName', hodName);
+            formData.append('hodEmpNo', hodEmpNo);
+            formData.append('hodEmail', hodEmail);
+            formData.append('signature', signatureFile);
+
+
+            const res = await fetch('/api/hod/submit-form', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+
+
+            const result = await res.json();
+            document.getElementById("statusMsg").textContent = result.message || "Done";
+        }
+
+
+        document.getElementById("signatureUpload").addEventListener("change", previewSignature);
+        window.onload = loadEfileFormData;
+    </script>
+</body>
+
+
+</html>

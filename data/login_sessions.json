@@ -1,0 +1,11 @@
+{
+  "943d0c02-bc97-4ce5-a515-c748f98fbd2a": {
+    "employeeId": "EMP1001",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "otp": "762015",
+    "createdAt": "2025-11-04T17:10:57.961Z",
+    "expiresAt": "2025-11-04T17:20:57.959Z",
+    "attempts": 0,
+    "verified": true
+  }
+}
