@@ -51,7 +51,8 @@ function saveJSON(filePath, data) {
  */
 function loadEmployeeUsers() {
   try {
-    const usersPath = path.join(__dirname, '../../data/users.json');
+    // Silver is at Desktop/silver, so we need to go to Desktop/clearance/data/users.json
+    const usersPath = path.join(__dirname, '../../clearance/data/users.json');
     const data = loadJSON(usersPath);
     console.log(`[FILE] Loaded ${Array.isArray(data) ? data.length : 0} employees from parent project`);
     return Array.isArray(data) ? data : [];

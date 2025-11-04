@@ -6,7 +6,7 @@ yarn-error.log*
 package-lock.json
 
 # Environment variables
-.env
+# .env (temporarily enabled for configuration)
 .env.local
 .env.development.local
 .env.test.local
