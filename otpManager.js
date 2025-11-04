@@ -83,12 +83,12 @@ class OTPManager {
    */
   async sendOTPEmail(email, otp, employeeId) {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from:  process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to: email,
-      subject: 'Your OTP for No-Dues Clearance Login',
+      subject: 'Your OTP for ONE CLICK CLEAR Login',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
-          <h2 style="color: #1976d2; text-align: center;">No-Dues Clearance System</h2>
+          <h2 style="color: #1976d2; text-align: center;">ONE CLICK CLEAR</h2>
           <p>Hello,</p>
           <p>Your One-Time Password (OTP) for login is:</p>
           <div style="background: #f5f5f5; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
